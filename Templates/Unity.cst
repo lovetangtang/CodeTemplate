@@ -1,0 +1,48 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" ResponseEncoding="UTF-8" Debug="False" Description="生成数据库实体" %>
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="属性" Description="要生成实体的数据表" %>
+<%@ Property Name="NameSpace" Type="System.String" Optional="False" Default="M3.Domain.Entities" Category="属性" Description="实体类所在的命名空间" %>
+<%@ Property Name="opuser" Type="System.String" Default="作者" Optional="False" Category="属性" Description="请输入您的名字" %>
+<%@ Map Name="CSharpAlias" Src="System-CSharpAlias" Description="System to C# Type Map" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+/*
+*本代码由代码生成器自动生成，请不要更改此文件的任何代码。
+*生成时间：<%= DateTime.Now.ToLocalTime() %>
+*生成者：<%= opuser %>
+*/
+using Microsoft.Practices.Unity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using ZXZ.Admin.IoC;
+using ZXZ.BaseService.Data;
+using ZXZ.BaseService.Domain.Interface;
+using ZXZ.BaseService.Domain.Service;
+
+namespace <%= this.NameSpace %>
+{
+    public class STUnityContainer
+    {
+        public static IUnityContainer GetUnityContainer()
+        {
+             IUnityContainer container = new UnityContainer()
+            .RegisterType<IControllerActivator, CustomControllerActivator>()
+            .RegisterType<IDatabaseFactory, DatabaseFactory>(new HttpContextLifetimeManager<IDatabaseFactory>())
+            .RegisterType<I<%= this.SourceTable.Name %>Service, <%= this.SourceTable.Name %>Service>(new HttpContextLifetimeManager<I<%= this.SourceTable.Name %>Service>())
+            .RegisterInstance<IBaseRepository<<%= this.SourceTable.Name %>>>(new BaseRepository<<%= this.SourceTable.Name %>>())
+            ; return container;
+        }
+    }
+}
+<%-- 执行输出文件的函数 --%>
+
+
+
+

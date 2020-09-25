@@ -1,0 +1,25 @@
+﻿<%-- 
+Name:
+Author: 
+Description: 
+--%>
+<%@ CodeTemplate Language="C#" TargetLanguage="C#"   Description="Generates a class including a special informational header" %>
+<%@ Property Name="NameSpace" Type="String"  Category="Context" Description="The namespace to use for this class" %>
+<%@ Property Name="ClassName" Type="String" Category="Context" Description="The name of the class to generate" %> 
+<%@ Property Name="DevelopersName" Type="String"  Category="Context" Description="The name to include in the comment header" %>
+      
+<%@ Property Name="SampleStringProperty" Default="SomeValue" Type="System.String" %>
+<%@ Property Name="SampleBooleanProperty" Default="True" Type="System.Boolean" %>
+My static content here.
+My dynamic content here: "<%= SampleStringProperty %>"
+Call a script method: <%= SampleMethod() %>
+<% if (SampleBooleanProperty) { %>
+My conditional content here.
+<% } %>
+<script runat="template">
+// My methods here.
+public string SampleMethod()
+{
+  return "Method output.";
+}
+</script>

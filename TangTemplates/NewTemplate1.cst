@@ -1,0 +1,77 @@
+﻿<%@ CodeTemplate Inherits="CodeTemplate" Language="C#" TargetLanguage="Text" Description="生成整个表" Debug="True" ResponseEncoding="UTF-8"%>
+
+<%-- 注册实体层Entity模板 --%>
+<%@ Register Name="EntityTemplate" Template="BaseForModel.cst" MergeProperties="Flase" ExcludeProperties=""%>
+<%@ Property Name="Author" Type="String" Category="02.作者" Description="作者" %>
+<%-- 获取整个数据库对象 --%>
+<%@ Property Name="SourceDatabase" Type="SchemaExplorer.DatabaseSchema" DeepLoad="True" Optional="False" Category="01. 获取数据库对象" Description="获取整个数据库对象"%>
+
+
+<%
+//创建实体层Entity类
+this.GenerateEntityClasses();
+//Debug模式下的信息[Debug="True"]
+Debug.WriteLine("Success");
+%>
+
+<script runat="template">
+    //生成实体Entity类
+private void GenerateEntityClasses()
+{
+        //获取模板对象
+        CodeTemplate Template =new EntityTemplate();
+        foreach(TableSchema table in this.SourceDatabase.Tables)
+        {
+            string FileDirectory = OutputDirectory +"\\"+ GetNewTableName(table.Name)  +".cs";
+            //设置模板的相关内容（Table名称 ，作者名称）
+            Template.SetProperty("TargetTable",table);
+             Template.SetProperty("Author",Author);
+            //文件输出
+            Template.RenderToFile(FileDirectory,true);
+            Debug.WriteLine(FileDirectory +" 创建成功.");
+        }
+}
+
+/// <summary>
+/// 获取新的TableName(首字母大写，去掉下划线)
+/// </summary>
+/// <param name="name"></param>
+/// <returns></returns>
+public string GetNewTableName(string name)
+{
+      string table=name.Substring(1).ToLower();
+      string tempTableName=string.Empty;
+      if(table.IndexOf('_')>0)
+      {          
+            string[] temp=table.Split('_');
+            for (int i = 0; i < temp.Length; i++)
+            {               
+               tempTableName+=System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(temp[i]); //设置首字母大写
+            }   
+      }
+      else
+      {
+          tempTableName=System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(table); //设置首字母大写          
+      }
+    return tempTableName;
+}
+
+    //解决方案输出路径
+    private string Directory = String.Empty;
+    
+    [Editor(typeof(System.Windows.Forms.Design.FolderNameEditor), typeof(System.Drawing.Design.UITypeEditor))] 
+    [Optional, NotChecked]
+    [DefaultValue("")]
+    public string OutputDirectory 
+    { 
+        get
+        {
+            return Directory;
+        }
+        set
+        {
+            if (value.EndsWith("\\")) value = value.Substring(0, value.Length -1);
+            Directory = value;
+        } 
+    }
+</script>

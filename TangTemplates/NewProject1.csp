@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<codeSmith xmlns="http://www.codesmithtools.com/schema/csp.xsd">
+  <propertySets>
+    <propertySet name="model" template="model.cst">
+      <property name="NameSpace">M3.Domain.Entities</property>
+      <property name="Author">作者</property>
+    </propertySet>
+  </propertySets>
+</codeSmith>

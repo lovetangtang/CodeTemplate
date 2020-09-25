@@ -1,0 +1,98 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" ResponseEncoding="UTF-8" Debug="False" Description="DBSET" %>
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="属性" Description="要生成实体的数据表" %>
+<%@ Property Name="NameSpace" Type="System.String" Optional="False" Default="App.Unity" Category="属性" Description="实体类所在的命名空间" %>
+<%@ Property Name="opuser" Type="System.String" Default="作者" Optional="False" Category="属性" Description="请输入您的名字" %>
+<%@ Property Name="unity" Type="System.String" Default="M3UnityContainer" Optional="False" Category="属性" Description="DBContext" %>
+<%@ Map Name="CSharpAlias" Src="System-CSharpAlias" Description="System to C# Type Map" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+
+/*
+*本代码由代码生成器自动生成，请不要更改此文件的任何代码。
+*生成时间：<%= DateTime.Now.ToLocalTime() %>
+*生成者：<%= opuser %>
+*/
+using ST.BaseService.Domain.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Admin.Common;
+using Admin.Models;
+using ST.BaseService.Domain.Core;
+using AutoMapper;
+using ST.BaseService.Core;
+
+
+namespace <%= this.NameSpace %>
+{
+    public class <%= this.SourceTable.Name %>Controller : BaseController
+    {
+        private readonly I<%= this.SourceTable.Name %>Service _<%= this.SourceTable.Name %>;
+        public <%= this.SourceTable.Name %>Controller(I<%= this.SourceTable.Name %>Service <%= this.SourceTable.Name %>)
+        {
+            this._<%= this.SourceTable.Name %> = <%= this.SourceTable.Name %>;
+        }
+        //
+        // GET: /Finished/
+        public ActionResult Index(int? pageIndex = 1, int? pageSize = 10)
+        {
+            int pcount;
+            var model = _<%= this.SourceTable.Name %>.GetPage("Id", out pcount, false, pageIndex.Value, pageSize.Value);
+            ViewBag.PageSize = pageSize.Value;
+            ViewBag.TotalCount = pcount;
+            return View(model.MapToList<<%= this.SourceTable.Name %>, <%= this.SourceTable.Name %>ViewModel>());
+        }
+        public ActionResult Search(int? pageIndex = 1, int? pageSize = 10)
+        {
+            int pcount;
+            var model = _<%= this.SourceTable.Name %>.GetPage("Id", out pcount, false, pageIndex.Value, pageSize.Value);
+            ViewBag.PageSize = pageSize.Value;
+            ViewBag.TotalCount = pcount;
+            return PartialView("List", model.MapToList<<%= this.SourceTable.Name %>, <%= this.SourceTable.Name %>ViewModel>());
+        }
+        public ActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Add(<%= this.SourceTable.Name %>ViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _<%= this.SourceTable.Name %>.Add(model.MapTo<<%= this.SourceTable.Name %>>());
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var model = _<%= this.SourceTable.Name %>.Get(id);
+            return View(model.MapTo<<%= this.SourceTable.Name %>ViewModel>());
+        }
+
+        [HttpPost]
+        public ActionResult Edit(<%= this.SourceTable.Name %>ViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _<%= this.SourceTable.Name %>.Update(model.MapTo<<%= this.SourceTable.Name %>>());
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+        public JsonResult Delete(int id)
+        {
+            var b = _<%= this.SourceTable.Name %>.Delete(id);
+            return new JsonResult() { Data = b, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+        public JsonResult Deletes(string ids)
+        {
+            bool b = _<%= this.SourceTable.Name %>.Deletes(ids);
+            return new JsonResult() { Data = b, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+	}
+}

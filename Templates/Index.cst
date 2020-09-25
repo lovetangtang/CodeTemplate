@@ -1,0 +1,85 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" ResponseEncoding="UTF-8" Debug="False" Description="生成数据库实体" %>
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="属性" Description="要生成实体的数据表" %>
+<%@ Property Name="NameSpace" Type="System.String" Optional="False" Default="M3.Domain.Entities" Category="属性" Description="实体类所在的命名空间" %>
+<%@ Property Name="opuser" Type="System.String" Default="作者" Optional="False" Category="属性" Description="请输入您的名字" %>
+<%@ Map Name="CSharpAlias" Src="System-CSharpAlias" Description="System to C# Type Map" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+@using Admin.Common
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <!--面包屑--->
+    @Html.Breadcrumb("")
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            <!--大标题--->
+            
+        </h1>
+    </div><!-- /.page-header -->
+
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="table-responsive">
+                        <div class="dataTables_wrapper">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="dataTables_length">
+                                        <a href="/<%= this.SourceTable.Name %>/Add" id="btnSearch" class="fm-button ui-state-default ui-corner-all fm-button-icon-right ui-reset btn btn-sm btn-purple">
+                                            <i class="icon-pencil align-top bigger-125"></i>新增
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="dataTables_filter" id="sample-table-2_filter">
+                                        <!--查询条件--->
+                                        <!--<label>真实姓名: <input type="text" name="name" id="txt_name"></label>--->
+
+                                        <a href="javascript:void(0)" id="btnSearch" onclick="searchData()" class="fm-button ui-state-default ui-corner-all fm-button-icon-right ui-reset btn btn-sm btn-purple">
+                                            <span class="icon-search"></span>查询
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="showData">
+                                @Html.Partial("List")
+                            </div>
+                        </div>
+                    </div><!-- /.table-responsive -->
+                </div><!-- /span -->
+            </div><!-- /row -->
+        </div>
+    </div>
+</div>
+<script>
+    //分页JS
+    function to_page(pageIndex) {
+        var data = {};
+        data.pageIndex = pageIndex;
+        $.btnClick({
+            url: "/<%= this.SourceTable.Name %>/Search",
+            data: data
+        })
+    }
+    //查询JS
+    function searchData()
+    {
+        var data = {};
+        $.btnClick({
+            url: "/<%= this.SourceTable.Name %>/Search",
+            data: data
+        });
+    }
+</script>

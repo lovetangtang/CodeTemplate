@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CodeSmith.Generator.BaseTemplates</id>
+    <version>$version$</version>
+    <authors>codesmithtools</authors>
+    <owners>CodeSmith Tools, LLC.</owners>
+    <title>CodeSmith.Generator.BaseTemplates</title>
+    <description>CodeSmith Generator BaseTemplates</description>
+    <projectUrl>http://www.codesmithtools.com/product/generator</projectUrl>
+    <iconUrl>http://www.codesmithtools.com/lib/images/codesmithtools.ico</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>http://docs.codesmithtools.com/display/Generator/Software+Licenses</licenseUrl>
+    <language>en-US</language>
+    <tags>CodeSmith Generator BaseTemplates</tags>
+    <dependencies>
+      <dependency id="CodeSmith.Generator" version="$version$" />
+      <dependency id="CodeSmith.Generator.CustomProperties" version="$version$" />
+      <dependency id="SchemaExplorer" version="$version$" />
+    </dependencies>
+    <references>
+      <reference file="CodeSmith.BaseTemplates.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="CodeSmith.BaseTemplates.dll" target="lib\net462" />
+  </files>
+</package>

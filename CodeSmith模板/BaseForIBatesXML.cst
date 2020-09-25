@@ -1,0 +1,71 @@
+﻿<%-- 这是一个C#语言的模板 --%>
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Src="Common.cs" Description="指明是一个C#语言版本" Inherits="Common" %>
+<%-- 加载使用访问数据库的组件SchemaExplorer，并声明其使用的命名空间 --%>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%-- 通过这个数据表类型的变量得到相应的表的信息:TableSchema(表)  ViewSchema(视图)  --%>
+<%@ Property Name="TargetTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="TargetTable that the object is based on." %>
+<%@ Property Name="NameSpace" Type="String" Category="Context" Description="实体类的命名空间" %>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="POP.Repositories.IBatis" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  >
+  <!--命名规则 实体类名.方法名(FindByID,FindByUniqueID,Insert,Update)-->
+  <statements>
+    <!--<%=GetNewTableName(TargetTable.Name)%>.插入 -->
+    <insert id="<%=GetNewTableName(TargetTable.Name)%>.Insert" parameterClass="<%=NameSpace%>.<%=GetNewTableName(TargetTable.Name)%>" >
+      <!--SKU resultClass="int"  数据库里PKID为number -->
+      <selectKey property="PKID" type="pre" resultClass="long">
+        SELECT SQ_<%=TargetTable.Name%>.NEXTVAL FROM SYS.DUAL
+      </selectKey>
+      INSERT INTO <%= TargetTable.Name %> (<% for (int i = 0; i < TargetTable.NonPrimaryKeyColumns.Count; i++) { %>
+          <%= TargetTable.NonPrimaryKeyColumns[i].Name %><% if (i < TargetTable.NonPrimaryKeyColumns.Count - 1) { %>,<% } %> <% } %>)
+      values
+        (<% for (int i = 0; i < TargetTable.NonPrimaryKeyColumns.Count; i++) { %>
+         #<%= GetNewColoumName(TargetTable.NonPrimaryKeyColumns[i].Name) %>#<% if (i < TargetTable.NonPrimaryKeyColumns.Count - 1) { %>,<% } %> <% } %>)
+    </insert>
+
+    <!--<%=GetNewTableName(TargetTable.Name)%>.更新-->
+    <update id="<%=GetNewTableName(TargetTable.Name)%>.Update" parameterClass="<%=NameSpace%>.<%=GetNewTableName(TargetTable.Name)%>">
+     UPDATE <%= TargetTable.Name %> SET
+      <% for (int i = 0; i < TargetTable.NonPrimaryKeyColumns.Count; i++) { %>
+            <%= TargetTable.NonPrimaryKeyColumns[i].Name %> = #<%=GetNewColoumName(TargetTable.NonPrimaryKeyColumns[i].Name) %>#<% if (i < TargetTable.NonPrimaryKeyColumns.Count - 1) { %>,<% } %>
+      <% } %>
+      WHERE  PKID = #PKID#
+    </update>
+    
+                 
+    <resultMaps>
+    <resultMap id="<%=GetNewTableName(TargetTable.Name)%>Models" class="<%=NameSpace%>.<%=GetNewTableName(TargetTable.Name)%>"  >
+     <%         
+		foreach (ColumnSchema column in TargetTable.Columns)
+ 		{            
+	 %>                                            
+        <result property="<%=GetNewColoumName(column.Name)%>" column="<%=column.Name%>"/>  
+	<%
+	}
+	%>	    
+    </resultMap>
+  </resultMaps>
+       
+    <!--<%=GetNewTableName(TargetTable.Name)%>.查询带分页-->
+    <select id="<%=GetNewTableName(TargetTable.Name)%>.FindALL" parameterClass="<%=NameSpace%>.<%=GetNewTableName(TargetTable.Name)%>" >  resultMap="SKUModels">
+      SELECT * FROM ( SELECT A.*, ROWNUM RN FROM ( select PKID,SKU_CODE,CATEGORY_ID,CATEGORY_NAME,MATERIAL_ID,MATERIAL_NAME,FACTORY_ID,FACTORY_NAME,SPECIFICATION_ID,SPECIFICATION_NAME,CALCULATION_MODE,MNEMONIC,MIN_INDICATIVE_PRICE,MAX_INDICATIVE_PRICE,ADJUSTMENT_FACTOR,TOLERANCE_FACTOR,THICK,WIDTH,LENGTH,STATUS,CREATE_BY,MODIFIED_BY,MODIFIED_TIME,REMARK,CREATE_TIME,JZWEIGHT from TSKU T where T.STATUS!=0
+      <dynamic >        
+        order by T.PKID desc)
+        A WHERE ROWNUM &lt;= #EndRow# ) WHERE RN &gt; #StartRow#
+      </dynamic>
+   </select>
+    
+  </statements>
+</sqlMap>
+
+<script runat="template">
+/// <summary>
+/// 设置文件名称
+/// </summary>
+/// <returns></returns>
+public override string GetFileName()
+{
+	return  GetNewTableName(this.TargetTable.Name)+ ".XML";
+}
+</script>

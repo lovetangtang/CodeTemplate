@@ -1,0 +1,58 @@
+﻿<%-- 这是一个C#语言的模板 --%>
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Src="Common.cs" Description="指明是一个C#语言版本" Inherits="Common" %>
+<%-- 加载使用访问数据库的组件SchemaExplorer，并声明其使用的命名空间 --%>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%-- 通过这个数据表类型的变量得到相应的表的信息:TableSchema(表)  ViewSchema(视图)  --%>
+<%@ Property Name="TargetTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="TargetTable that the object is based on." %>
+<%@ Property Name="Author" Type="String" Category="Context" Description="作者" %>
+<%--代码需要的输入值变量--%>
+<%@ Property Name="NameSpace" Default="MyTest.DoMain" Type="String" Category="Context"  Description="生成代码是需要输入的变量" %>
+
+<%--<%=GetDesc(Author)%>--%>
+<% PrintHeader(Author); %>
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace <%=NameSpace %>
+{    
+    [Serializable()]  
+    public class <%=GetNewTableName(TargetTable.Name)%> 
+    {
+        <% 
+        foreach (ColumnSchema column in TargetTable.Columns)
+         {           
+        %>
+            /// <summary>
+            /// <%=column.Description %>
+            /// </summary>
+            public <%=GetCSharpTypeFromDBFieldType(column) %>  <%=GetNewColoumName(column.Name)%> {get;set;}
+        <%
+        }
+        %>    
+    }    
+}
+
+<script runat="template">
+/// <summary>
+///// 设置文件描述
+/// </summary>
+/// <param name="name"></param>
+/// <returns></returns>
+private string GetDesc(string name)
+{
+    string temp=string.Empty;
+    temp+="//作者："+name+" Create Date:" +System.DateTime.Now.ToString(); 
+    return temp;
+}
+
+/// <summary>
+/// 设置文件名称，后缀名
+/// </summary>
+/// <returns></returns>
+public override string GetFileName()
+{
+    return this.TargetTable + ".cs";
+}
+</script>

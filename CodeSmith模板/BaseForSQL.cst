@@ -1,0 +1,33 @@
+﻿<%-- 这是一个C#语言的模板 --%>
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Description="指明是一个C#语言版本" %>
+<%-- 加载使用访问数据库的组件SchemaExplorer，并声明其使用的命名空间 --%>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%-- 通过这个数据表类型的变量得到相应的表的信息:TableSchema(表)  ViewSchema(视图)  --%>
+<%@ Property Name="TargetTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="TargetTable that the object is based on." %>
+<%--<%@ Property Name="TargetView" Type="SchemaExplorer.ViewSchema" Category="Context" Description="TargetView that the object is based on." %>--%>
+<%--代码需要的输入值变量--%>
+<%@ Property Name="NameSpace" Default="MyTest.DoMain" Type="String" Category="Context"  Description="生成代码是需要输入的变量" %>
+<%@ Property Name="DeveploersName" Type="String" Category="Context" Description="开发者名字" %>
+
+
+
+
+<%-- 查询--%>
+SELECT <% for (int i = 0; i < TargetTable.NonPrimaryKeyColumns.Count; i++) { %>
+          <%= TargetTable.NonPrimaryKeyColumns[i].Name %><% if (i < TargetTable.NonPrimaryKeyColumns.Count - 1) { %>,<% } %> <% } %>  FROM <%= TargetTable.Name %>
+          
+
+<%--修改--%>
+UPDATE <%= TargetTable.Name %> SET
+      <% for (int i = 0; i < TargetTable.NonPrimaryKeyColumns.Count; i++) { %>
+          <%= TargetTable.NonPrimaryKeyColumns[i].Name %> = <%= TargetTable.NonPrimaryKeyColumns[i].Name %><% if (i < TargetTable.NonPrimaryKeyColumns.Count - 1) { %>,<% } %>
+      <% } %>
+      
+      
+<%-- 增加--%>
+INSERT INTO <%= TargetTable.Name %> (<% for (int i = 0; i < TargetTable.NonPrimaryKeyColumns.Count; i++) { %>
+          <%= TargetTable.NonPrimaryKeyColumns[i].Name %><% if (i < TargetTable.NonPrimaryKeyColumns.Count - 1) { %>,<% } %> <% } %>)
+values
+(<% for (int i = 0; i < TargetTable.NonPrimaryKeyColumns.Count; i++) { %>
+          <%= TargetTable.NonPrimaryKeyColumns[i].Name %><% if (i < TargetTable.NonPrimaryKeyColumns.Count - 1) { %>,<% } %> <% } %>)

@@ -1,0 +1,61 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" ResponseEncoding="UTF-8" Debug="False" Description="生成数据库实体" %>
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="属性" Description="要生成实体的数据表" %>
+<%@ Property Name="NameSpace" Type="System.String" Optional="False" Default="M3.Domain.Entities" Category="属性" Description="实体类所在的命名空间" %>
+<%@ Property Name="opuser" Type="System.String" Default="作者" Optional="False" Category="属性" Description="请输入您的名字" %>
+<%@ Map Name="CSharpAlias" Src="System-CSharpAlias" Description="System to C# Type Map" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+@using Admin.Common
+@model Admin.Models.<%= this.SourceTable.Name %>ViewModel
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <!--面包屑-->
+    @Html.Breadcrumb("")
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            新增
+        </h1>
+    </div><!-- /.page-header -->
+
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <form class="form-horizontal" role="form" method="post" id="form1">
+                @{Html.EnableClientValidation(true); }
+                <!--<div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">用户名</label>
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(s =>s.Account, new { @class = "col-xs-10 col-sm-5 {required:true,maxlength:50,messages:{required:'必填',maxlength:'最大长度不超过50个字符'}}" })
+                        @Html.ValidationMessageFor(s => s.Account)
+                    </div>
+                </div>-->
+                
+
+                <div class="clearfix form-actions">
+                    <div class="col-md-offset-3 col-md-9">
+                        <button class="btn btn-info" type="submit">
+                            <i class="icon-ok bigger-110"></i>
+                            提交
+                        </button>
+
+                        &nbsp; &nbsp; &nbsp;
+                        <button class="btn" type="reset" onclick="javascript: window.history.go(-1)">
+                            <i class="icon-undo bigger-110"></i>
+                            返回
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.col -->
+    </div>
+</div>

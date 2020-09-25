@@ -1,0 +1,70 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" ResponseEncoding="UTF-8" Debug="False" Description="生成数据库实体" %>
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="属性" Description="要生成实体的数据表" %>
+<%@ Property Name="NameSpace" Type="System.String" Default="M3.Domain.Entities" Optional="False" Category="属性" Description="实体类所在的命名空间" %>
+<%@ Property Name="Author" Type="System.String" Default="作者" Optional="False" Category="属性" Description="请输入您的名字" %>
+<%@ Map Name="CSharpAlias" Src="System-CSharpAlias" Description="System to C# Type Map" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+/*
+*本代码由代码生成器(CodeSmith Generator 8.0 Samples)自动生成，请不要更改此文件的任何代码。
+*生成时间：<%= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") %>
+*生成者：<%= Author %>
+*/
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace <%= this.NameSpace %>
+{
+    ///<summary>
+    ///表<%= this.SourceTable.Name %>的实体类
+    ///使用范围：<%= this.SourceTable.Description  %>
+    ///</summary>
+    public partial class <%= this.SourceTable.Name %>
+    {
+    <%--生成私有字段.net2.0--%>
+    <% foreach (ColumnSchema column in this.SourceTable.Columns) {  %>
+        ///<summary>
+        ///表<%= column.Description %>的实体类
+        ///</summary>
+        public <%= ControlType(CSharpAlias[column.SystemType.FullName]) %> <%=column.Name %> {get;set;}
+    <% } %>
+    }
+}
+<%-- 执行输出文件的函数 --%>
+
+
+<script runat="template">
+ //如果类型为int，或datetime类型输出可空类型
+ public string ControlType(object val)
+ {
+     var ty=val.ToString();
+     if(ty=="int")
+     {
+         return "Nullable<int>";
+     }
+     if(ty=="System.DateTime")
+     {
+         return "Nullable<DateTime>";
+     }
+     if(ty == "decimal")
+     {
+          return "Nullable<decimal>";
+     }
+     if(ty=="bool")
+     {
+        return "Nullable<bool>";
+     }
+     return ty;
+ }
+</script>
+
